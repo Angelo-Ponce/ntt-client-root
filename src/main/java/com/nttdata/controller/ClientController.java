@@ -8,6 +8,7 @@ import com.nttdata.util.MapperUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -24,6 +25,7 @@ public class ClientController {
     private final MapperUtil mapperUtil;
 
     @GetMapping
+    @PreAuthorize("hasRole('admin_client_role') or hasRole('user_client_role')")
     public ResponseEntity<BaseResponse> findAll(){
         List<ClientDTO> list = mapperUtil.mapList(service.findAll(), ClientDTO.class);
 
@@ -31,6 +33,7 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('admin_client_role') or hasRole('user_client_role')")
     public ResponseEntity<BaseResponse> findById( @PathVariable("id") Long id){
         ClientEntity obj = service.findById(id);
 
@@ -38,6 +41,7 @@ public class ClientController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('admin_client_role')")
     public ResponseEntity<Void> save(@Valid @RequestBody ClientDTO dto){
         ClientEntity obj = service.save(mapperUtil.map(dto, ClientEntity.class));
 
@@ -46,6 +50,7 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('admin_client_role') or hasRole('user_client_role')")
     public ResponseEntity<BaseResponse> update( @PathVariable("id") Long id, @RequestBody ClientDTO dto){
         dto.setPersonId(id);
         ClientEntity obj = service.update(id, mapperUtil.map(dto, ClientEntity.class));
@@ -54,6 +59,7 @@ public class ClientController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('admin_client_role')")
     public ResponseEntity<Void> delete( @PathVariable("id") Long id){
         // Eliminar registro
         //service.delete(id);
